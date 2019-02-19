@@ -1,0 +1,20 @@
+logging:
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: DEBUG
+
+  appenders:
+    - type: file
+      currentLogFilename: ./logs/anagram-service.log
+      archivedLogFilenamePattern: ./logs/anagram-service-%d.log.gz
+      archivedFileCount: 5
+    - type: console
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 3336
+  adminConnectors:
+    - type: http
+      port: 3337
+
+wordsFilePath: src/main/resources/data/words.txt
