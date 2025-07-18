@@ -22,12 +22,18 @@ def get_data(url):
     data = f.read().decode('utf-8')
     return json.loads(data)
 
+def has_dividends_data(dividends):
+    return ("data" in dividends) and (dividends["data"] is not None)
+
+def has_stock_data(stock):
+    return ("data" in stock) and (stock["data"] is not None)
+
 def get_dividends_for(symbol):
     dividends = get_data("https://api.nasdaq.com/api/quote/{0}/dividends?assetclass=stocks".format(symbol))
     stock = get_data("https://api.nasdaq.com/api/quote/{0}/info?assetclass=stocks".format(symbol))
-    if ("data" in dividends) and (dividends["data"] is not None):
+    if (has_stock_data(stock) and has_dividends_data(dividends)):
         print("%s,\"%s\",$%s,%s" % (stock["data"]["symbol"], stock["data"]["primaryData"]["lastSalePrice"], dividends["data"]["annualizedDividend"], dividends["data"]["yield"]), flush = True)
-    elif ("data" in stock) and (stock["data"] is not None) and (not PRINT_DIVIDENDS_ONLY):
+    elif (has_stock_data(stock) and (not PRINT_DIVIDENDS_ONLY)):
         print("%s,\"%s\",," % (stock["data"]["symbol"], stock["data"]["primaryData"]["lastSalePrice"]), flush = True)
     elif (not PRINT_DIVIDENDS_ONLY):
         print("%s,,," % (symbol), flush = True)
